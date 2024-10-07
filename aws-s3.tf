@@ -2,7 +2,7 @@
 #trivy:ignore:AVD-AWS-0090 MEDIUM: Bucket does not have versioning enabled
 module "s3_site" {
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "4.1.2"
+  version = "4.2.0"
 
   bucket = module.label_site.id
   tags   = module.label_site.tags
