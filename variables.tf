@@ -65,3 +65,10 @@ variable "function_associations" {
   description = "A config block that triggers a lambda function with specific actions (maximum 4)."
   nullable    = false
 }
+
+variable "enable_spa_error_handling" {
+  type        = bool
+  default     = false
+  description = "Enable SPA error handling by redirecting 403 errors to / with 200 status code."
+  nullable    = false
+}
