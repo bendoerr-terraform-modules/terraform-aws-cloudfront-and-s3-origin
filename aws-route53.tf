@@ -1,5 +1,5 @@
 resource "aws_route53_record" "alias" {
-  for_each = toset(flatten([[module.label_site.dns_name], var.extra_domain_prefixes]))
+  for_each = toset(flatten([[local.default_alias], var.extra_domain_prefixes]))
   name     = each.key
   type     = "A"
   zone_id  = var.domain_zone_id

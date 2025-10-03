@@ -34,6 +34,15 @@ resource "aws_cloudfront_distribution" "site" {
     }
   }
 
+  dynamic "custom_error_response" {
+    for_each = var.enable_spa_error_handling ? toset(["403", "404"]) : []
+    content {
+      error_code         = each.value
+      response_code      = 200
+      response_page_path = format("/%s", coalesce(var.default_root_object, "index.html"))
+    }
+  }
+
   restrictions {
     geo_restriction {
       restriction_type = "none"
