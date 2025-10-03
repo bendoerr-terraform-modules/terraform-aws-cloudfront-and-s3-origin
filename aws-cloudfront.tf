@@ -39,7 +39,7 @@ resource "aws_cloudfront_distribution" "site" {
     content {
       error_code         = each.value
       response_code      = 200
-      response_page_path = "/"
+      response_page_path = format("/%s", coalesce(var.default_root_object, "index.html"))
     }
   }
 
