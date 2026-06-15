@@ -56,6 +56,13 @@ resource "aws_cloudfront_distribution" "site" {
     acm_certificate_arn            = aws_acm_certificate_validation.cert.certificate_arn
     ssl_support_method             = "sni-only"
   }
+
+  lifecycle {
+    precondition {
+      condition     = var.security_headers != "custom" || var.response_headers_policy_id != null
+      error_message = "When var.security_headers = \"custom\", var.response_headers_policy_id must be set to a non-null CloudFront response headers policy ID."
+    }
+  }
 }
 
 resource "aws_cloudfront_origin_access_control" "site" {
