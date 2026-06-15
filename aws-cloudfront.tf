@@ -68,8 +68,3 @@ resource "aws_cloudfront_origin_access_control" "site" {
 data "aws_cloudfront_cache_policy" "default" {
   name = "Managed-CachingOptimized"
 }
-
-data "aws_cloudfront_response_headers_policy" "security_headers" {
-  count = var.security_headers == "managed" ? 1 : 0
-  name  = "Managed-SecurityHeadersPolicy"
-}
