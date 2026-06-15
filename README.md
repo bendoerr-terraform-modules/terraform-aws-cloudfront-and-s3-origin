@@ -39,6 +39,43 @@ TODO
 
 TODO
 
+## Security Headers
+
+By default this module attaches AWS's `Managed-SecurityHeadersPolicy` as a
+[CloudFront response headers policy](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/understanding-response-headers-policies.html)
+on the distribution's default cache behavior. That sends the following HTTP
+response headers on every viewer response:
+
+- `Strict-Transport-Security: max-age=31536000`
+- `X-Content-Type-Options: nosniff`
+- `X-Frame-Options: SAMEORIGIN`
+- `Referrer-Policy: strict-origin-when-cross-origin`
+- `X-XSS-Protection: 0`
+
+If you need different defaults — for example because your site must be framed
+cross-origin, or you have a custom Content-Security-Policy — set
+`security_headers = "custom"` and pass your own `response_headers_policy_id`,
+or set `security_headers = "none"` to attach no policy at all.
+
+```terraform
+module "site" {
+  source  = "bendoerr-terraform-modules/cloudfront-and-s3-origin/aws"
+  # ...
+  security_headers           = "custom"
+  response_headers_policy_id = aws_cloudfront_response_headers_policy.mine.id
+}
+```
+
+### Upgrade note
+
+Earlier versions of this module did not attach any response headers policy.
+Upgrading to a version that defaults `security_headers = "managed"` will start
+sending `Strict-Transport-Security`, `X-Frame-Options: SAMEORIGIN`, and the
+other headers listed above on viewer responses. If your site depends on not
+receiving those (for example: embedded cross-origin in an iframe, or custom
+HSTS settings managed elsewhere), set `security_headers = "custom"` or
+`"none"` on upgrade.
+
 <!-- BEGIN_TF_DOCS -->
 
 TODO

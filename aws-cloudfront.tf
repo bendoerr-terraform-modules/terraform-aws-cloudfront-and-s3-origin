@@ -18,12 +18,13 @@ resource "aws_cloudfront_distribution" "site" {
   }
 
   default_cache_behavior {
-    target_origin_id       = module.label_site.id
-    compress               = true
-    viewer_protocol_policy = "https-only"
-    allowed_methods        = ["GET", "HEAD"]
-    cached_methods         = ["GET", "HEAD"]
-    cache_policy_id        = data.aws_cloudfront_cache_policy.default.id
+    target_origin_id           = module.label_site.id
+    compress                   = true
+    viewer_protocol_policy     = "https-only"
+    allowed_methods            = ["GET", "HEAD"]
+    cached_methods             = ["GET", "HEAD"]
+    cache_policy_id            = data.aws_cloudfront_cache_policy.default.id
+    response_headers_policy_id = local.response_headers_policy_id
 
     dynamic "function_association" {
       for_each = var.function_associations
@@ -54,6 +55,13 @@ resource "aws_cloudfront_distribution" "site" {
     cloudfront_default_certificate = true
     acm_certificate_arn            = aws_acm_certificate_validation.cert.certificate_arn
     ssl_support_method             = "sni-only"
+  }
+
+  lifecycle {
+    precondition {
+      condition     = var.security_headers != "custom" || var.response_headers_policy_id != null
+      error_message = "When var.security_headers = \"custom\", var.response_headers_policy_id must be set to a non-null CloudFront response headers policy ID."
+    }
   }
 }
 
