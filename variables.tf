@@ -72,3 +72,22 @@ variable "enable_spa_error_handling" {
   description = "Enable SPA error handling by redirecting 403 errors to / with 200 status code."
   nullable    = false
 }
+
+variable "security_headers" {
+  type        = string
+  default     = "managed"
+  description = "Response headers policy strategy for the CloudFront distribution. One of: \"managed\" (attach AWS's Managed-SecurityHeadersPolicy — HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, X-XSS-Protection), \"custom\" (attach the policy at var.response_headers_policy_id — required when this is set), or \"none\" (no response headers policy attached)."
+  nullable    = false
+
+  validation {
+    condition     = contains(["managed", "custom", "none"], var.security_headers)
+    error_message = "var.security_headers must be one of: \"managed\", \"custom\", \"none\"."
+  }
+}
+
+variable "response_headers_policy_id" {
+  type        = string
+  default     = null
+  description = "CloudFront response headers policy ID. Required when var.security_headers = \"custom\"; ignored otherwise."
+  nullable    = true
+}

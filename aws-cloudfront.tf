@@ -18,12 +18,13 @@ resource "aws_cloudfront_distribution" "site" {
   }
 
   default_cache_behavior {
-    target_origin_id       = module.label_site.id
-    compress               = true
-    viewer_protocol_policy = "https-only"
-    allowed_methods        = ["GET", "HEAD"]
-    cached_methods         = ["GET", "HEAD"]
-    cache_policy_id        = data.aws_cloudfront_cache_policy.default.id
+    target_origin_id           = module.label_site.id
+    compress                   = true
+    viewer_protocol_policy     = "https-only"
+    allowed_methods            = ["GET", "HEAD"]
+    cached_methods             = ["GET", "HEAD"]
+    cache_policy_id            = data.aws_cloudfront_cache_policy.default.id
+    response_headers_policy_id = local.response_headers_policy_id
 
     dynamic "function_association" {
       for_each = var.function_associations
@@ -66,4 +67,9 @@ resource "aws_cloudfront_origin_access_control" "site" {
 
 data "aws_cloudfront_cache_policy" "default" {
   name = "Managed-CachingOptimized"
+}
+
+data "aws_cloudfront_response_headers_policy" "security_headers" {
+  count = var.security_headers == "managed" ? 1 : 0
+  name  = "Managed-SecurityHeadersPolicy"
 }
