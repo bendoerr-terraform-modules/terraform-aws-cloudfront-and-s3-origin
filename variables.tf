@@ -59,14 +59,14 @@ variable "domain_zone_name" {
   nullable    = false
 
   validation {
-    condition     = can(regex("^([a-z0-9]([a-z0-9-]*[a-z0-9])?\\.)+[a-z]{2,}$", var.domain_zone_name))
-    error_message = "var.domain_zone_name must be a valid lowercase domain name (e.g. \"example.com\"). Each label may contain lowercase alphanumerics and hyphens but must not start or end with a hyphen. Internationalized domain names should be passed in their punycode (xn--) form."
+    condition     = can(regex("^([a-z0-9]([a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9]([a-z0-9-]*[a-z0-9])$", var.domain_zone_name))
+    error_message = "var.domain_zone_name must be a valid lowercase domain name (e.g. \"example.com\" or \"example.xn--p1ai\"). Each label may contain lowercase alphanumerics and hyphens but must not start or end with a hyphen. The TLD label must be at least 2 characters; internationalized TLDs should be passed in their punycode (xn--) form."
   }
 }
 
 variable "domain_zone_id" {
   type        = string
-  description = "If setting a custom CNAME for the Cloudfront distribution this is the domain name for the zone."
+  description = "If setting a custom CNAME for the Cloudfront distribution this is the Route 53 hosted zone ID."
   nullable    = false
 
   validation {
@@ -120,9 +120,9 @@ variable "function_associations" {
     condition = alltrue([
       for assoc in var.function_associations :
       can(regex("^arn:aws[a-z-]*:cloudfront::[0-9]{12}:function/[a-zA-Z0-9_-]+$", assoc.function_arn)) ||
-      can(regex("^arn:aws[a-z-]*:lambda:[a-z0-9-]+:[0-9]{12}:function:[a-zA-Z0-9_-]+:[0-9]+$", assoc.function_arn))
+      can(regex("^arn:aws[a-z-]*:lambda:us-east-1:[0-9]{12}:function:[a-zA-Z0-9_-]+:[0-9]+$", assoc.function_arn))
     ])
-    error_message = "Each function_associations[*].function_arn must be either a CloudFront Function ARN (arn:<partition>:cloudfront::<account>:function/<name>) or a Lambda@Edge versioned function ARN (arn:<partition>:lambda:<region>:<account>:function:<name>:<version>). Lambda@Edge associations require a specific version number — CloudFront does not accept $LATEST."
+    error_message = "Each function_associations[*].function_arn must be either a CloudFront Function ARN (arn:<partition>:cloudfront::<account>:function/<name>) or a Lambda@Edge versioned function ARN (arn:<partition>:lambda:us-east-1:<account>:function:<name>:<version>). Lambda@Edge functions must be created in us-east-1 — CloudFront will not accept replicas from other regions — and the ARN must include a specific version number, not $LATEST."
   }
 
   # Cross-attribute check: origin-* event types are Lambda@Edge-only. A
