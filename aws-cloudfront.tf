@@ -62,6 +62,17 @@ resource "aws_cloudfront_distribution" "site" {
       condition     = var.security_headers != "custom" || var.response_headers_policy_id != null
       error_message = "When var.security_headers = \"custom\", var.response_headers_policy_id must be set to a non-null CloudFront response headers policy ID."
     }
+
+    # Per-prefix DNS validation lives on extra_domain_prefixes; the total FQDN
+    # length depends on domain_zone_name too, so the cap check goes here where
+    # both variables are in scope.
+    precondition {
+      condition = alltrue([
+        for prefix in var.extra_domain_prefixes :
+        length("${prefix}.${var.domain_zone_name}") <= 253
+      ])
+      error_message = "Each FQDN formed by joining var.extra_domain_prefixes[*] with var.domain_zone_name must be at most 253 characters total (DNS limit). One or more prefixes combined with the zone name would exceed this; shorten the prefix(es) or use a shorter zone name."
+    }
   }
 }
 
