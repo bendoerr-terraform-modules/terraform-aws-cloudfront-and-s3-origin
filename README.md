@@ -9,7 +9,7 @@
 
 <h3 align="center">Ben's Terraform AWS Cloudfront with S3 Origin Module</h3>
 
-  <p align="center">
+<p align="center">
     This is how I do it.
     <br/>
     <br/>
@@ -108,67 +108,67 @@ will find a compatible version automatically.
 
 ### Requirements
 
-| Name                                                                     | Version |
-| ------------------------------------------------------------------------ | ------- |
+| Name | Version |
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement_terraform) | >= 0.13 |
-| <a name="requirement_aws"></a> [aws](#requirement_aws)                   | ~> 6.0  |
+| <a name="requirement_aws"></a> [aws](#requirement_aws) | ~> 6.0 |
 
 ### Providers
 
-| Name                                                                     | Version |
-| ------------------------------------------------------------------------ | ------- |
-| <a name="provider_aws"></a> [aws](#provider_aws)                         | ~> 6.0  |
-| <a name="provider_aws.route53"></a> [aws.route53](#provider_aws.route53) | ~> 6.0  |
+| Name | Version |
+| ---- | ------- |
+| <a name="provider_aws"></a> [aws](#provider_aws) | ~> 6.0 |
+| <a name="provider_aws.route53"></a> [aws.route53](#provider_aws.route53) | ~> 6.0 |
 
 ### Modules
 
-| Name                                                              | Source                                | Version |
-| ----------------------------------------------------------------- | ------------------------------------- | ------- |
-| <a name="module_label_site"></a> [label_site](#module_label_site) | bendoerr-terraform-modules/label/null | 1.0.0   |
-| <a name="module_s3_site"></a> [s3_site](#module_s3_site)          | terraform-aws-modules/s3-bucket/aws   | 5.14.0  |
+| Name | Source | Version |
+| ---- | ------ | ------- |
+| <a name="module_label_site"></a> [label_site](#module_label_site) | bendoerr-terraform-modules/label/null | 1.0.0 |
+| <a name="module_s3_site"></a> [s3_site](#module_s3_site) | terraform-aws-modules/s3-bucket/aws | 5.14.0 |
 
 ### Resources
 
-| Name                                                                                                                                                           | Type        |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| [aws_acm_certificate.cert](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/acm_certificate)                                        | resource    |
-| [aws_acm_certificate_validation.cert](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/acm_certificate_validation)                  | resource    |
-| [aws_cloudfront_distribution.site](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution)                        | resource    |
-| [aws_cloudfront_origin_access_control.site](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_origin_access_control)      | resource    |
-| [aws_route53_record.alias](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record)                                         | resource    |
-| [aws_route53_record.cert](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record)                                          | resource    |
-| [aws_s3_bucket_lifecycle_configuration.example](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_lifecycle_configuration) | resource    |
-| [aws_s3_bucket_policy.cloudfront_s3_origin](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_policy)                      | resource    |
-| [aws_cloudfront_cache_policy.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/cloudfront_cache_policy)                  | data source |
-| [aws_iam_policy_document.cloudfront_s3_origin](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document)             | data source |
+| Name | Type |
+| ---- | ---- |
+| [aws_acm_certificate.cert](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/acm_certificate) | resource |
+| [aws_acm_certificate_validation.cert](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/acm_certificate_validation) | resource |
+| [aws_cloudfront_distribution.site](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution) | resource |
+| [aws_cloudfront_origin_access_control.site](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_origin_access_control) | resource |
+| [aws_route53_record.alias](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
+| [aws_route53_record.cert](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
+| [aws_s3_bucket_lifecycle_configuration.example](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_lifecycle_configuration) | resource |
+| [aws_s3_bucket_policy.cloudfront_s3_origin](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_policy) | resource |
+| [aws_cloudfront_cache_policy.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/cloudfront_cache_policy) | data source |
+| [aws_iam_policy_document.cloudfront_s3_origin](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ### Inputs
 
-| Name                                                                                                            | Description                                                                                                                                                                                                                                                                                                                                                       | Type                                                                                                                                                                                                                                                                                                                                   | Default        | Required |
-| --------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- | :------: |
-| <a name="input_context"></a> [context](#input_context)                                                          | Shared Context from Ben's terraform-null-context                                                                                                                                                                                                                                                                                                                  | <pre>object({<br/> attributes = list(string)<br/> dns_namespace = string<br/> environment = string<br/> instance = string<br/> instance_short = string<br/> namespace = string<br/> region = string<br/> region_short = string<br/> role = string<br/> role_short = string<br/> project = string<br/> tags = map(string)<br/> })</pre> | n/a            |   yes    |
-| <a name="input_default_root_object"></a> [default_root_object](#input_default_root_object)                      | The default root object for the S3 bucket, typically used for web hosting.                                                                                                                                                                                                                                                                                        | `string`                                                                                                                                                                                                                                                                                                                               | `"index.html"` |    no    |
-| <a name="input_domain_zone_id"></a> [domain_zone_id](#input_domain_zone_id)                                     | If setting a custom CNAME for the Cloudfront distribution this is the Route 53 hosted zone ID.                                                                                                                                                                                                                                                                    | `string`                                                                                                                                                                                                                                                                                                                               | n/a            |   yes    |
-| <a name="input_domain_zone_name"></a> [domain_zone_name](#input_domain_zone_name)                               | If setting a custom CNAME for the Cloudfront distribution this is the domain name for the zone.                                                                                                                                                                                                                                                                   | `string`                                                                                                                                                                                                                                                                                                                               | n/a            |   yes    |
-| <a name="input_enable_spa_error_handling"></a> [enable_spa_error_handling](#input_enable_spa_error_handling)    | Enable SPA error handling by redirecting 403 errors to / with 200 status code.                                                                                                                                                                                                                                                                                    | `bool`                                                                                                                                                                                                                                                                                                                                 | `false`        |    no    |
-| <a name="input_extra_domain_prefixes"></a> [extra_domain_prefixes](#input_extra_domain_prefixes)                | Prefixes for additional custom domains to be associated with the CloudFront distribution. Each prefix is concatenated as '<prefix>.<domain_zone_name>' to form the final FQDN; multi-label prefixes (e.g. "api.cdn") are supported.                                                                                                                               | `list(string)`                                                                                                                                                                                                                                                                                                                         | `[]`           |    no    |
-| <a name="input_function_associations"></a> [function_associations](#input_function_associations)                | A config block that triggers a lambda function with specific actions (maximum 4).                                                                                                                                                                                                                                                                                 | <pre>set(object({<br/> event_type = string<br/> function_arn = string<br/> }))</pre>                                                                                                                                                                                                                                                   | `[]`           |    no    |
-| <a name="input_name"></a> [name](#input_name)                                                                   | The name of the site, used for naming resources and identifiers.                                                                                                                                                                                                                                                                                                  | `string`                                                                                                                                                                                                                                                                                                                               | `"site"`       |    no    |
-| <a name="input_response_headers_policy_id"></a> [response_headers_policy_id](#input_response_headers_policy_id) | CloudFront response headers policy ID. Required when var.security_headers = "custom"; ignored otherwise.                                                                                                                                                                                                                                                          | `string`                                                                                                                                                                                                                                                                                                                               | `null`         |    no    |
-| <a name="input_s3_kms_key_arn"></a> [s3_kms_key_arn](#input_s3_kms_key_arn)                                     | The ARN of the KMS key used for S3 server-side encryption.                                                                                                                                                                                                                                                                                                        | `string`                                                                                                                                                                                                                                                                                                                               | `null`         |    no    |
-| <a name="input_security_headers"></a> [security_headers](#input_security_headers)                               | Response headers policy strategy for the CloudFront distribution. One of: "managed" (attach AWS's Managed-SecurityHeadersPolicy — HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, X-XSS-Protection), "custom" (attach the policy at var.response_headers_policy_id — required when this is set), or "none" (no response headers policy attached). | `string`                                                                                                                                                                                                                                                                                                                               | `"managed"`    |    no    |
+| Name | Description | Type | Default | Required |
+| ---- | ----------- | ---- | ------- | :------: |
+| <a name="input_context"></a> [context](#input_context) | Shared Context from Ben's terraform-null-context | <pre>object({<br/>    attributes     = list(string)<br/>    dns_namespace  = string<br/>    environment    = string<br/>    instance       = string<br/>    instance_short = string<br/>    namespace      = string<br/>    region         = string<br/>    region_short   = string<br/>    role           = string<br/>    role_short     = string<br/>    project        = string<br/>    tags           = map(string)<br/>  })</pre> | n/a | yes |
+| <a name="input_default_root_object"></a> [default_root_object](#input_default_root_object) | The default root object for the S3 bucket, typically used for web hosting. | `string` | `"index.html"` | no |
+| <a name="input_domain_zone_id"></a> [domain_zone_id](#input_domain_zone_id) | If setting a custom CNAME for the Cloudfront distribution this is the Route 53 hosted zone ID. | `string` | n/a | yes |
+| <a name="input_domain_zone_name"></a> [domain_zone_name](#input_domain_zone_name) | If setting a custom CNAME for the Cloudfront distribution this is the domain name for the zone. | `string` | n/a | yes |
+| <a name="input_enable_spa_error_handling"></a> [enable_spa_error_handling](#input_enable_spa_error_handling) | Enable SPA error handling by redirecting 403 errors to / with 200 status code. | `bool` | `false` | no |
+| <a name="input_extra_domain_prefixes"></a> [extra_domain_prefixes](#input_extra_domain_prefixes) | Prefixes for additional custom domains to be associated with the CloudFront distribution. Each prefix is concatenated as '<prefix>.\<domain_zone_name>' to form the final FQDN; multi-label prefixes (e.g. "api.cdn") are supported. | `list(string)` | `[]` | no |
+| <a name="input_function_associations"></a> [function_associations](#input_function_associations) | A config block that triggers a lambda function with specific actions (maximum 4). | <pre>set(object({<br/>    event_type   = string<br/>    function_arn = string<br/>  }))</pre> | `[]` | no |
+| <a name="input_name"></a> [name](#input_name) | The name of the site, used for naming resources and identifiers. | `string` | `"site"` | no |
+| <a name="input_response_headers_policy_id"></a> [response_headers_policy_id](#input_response_headers_policy_id) | CloudFront response headers policy ID. Required when var.security_headers = "custom"; ignored otherwise. | `string` | `null` | no |
+| <a name="input_s3_kms_key_arn"></a> [s3_kms_key_arn](#input_s3_kms_key_arn) | The ARN of the KMS key used for S3 server-side encryption. | `string` | `null` | no |
+| <a name="input_security_headers"></a> [security_headers](#input_security_headers) | Response headers policy strategy for the CloudFront distribution. One of: "managed" (attach AWS's Managed-SecurityHeadersPolicy — HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, X-XSS-Protection), "custom" (attach the policy at var.response_headers_policy_id — required when this is set), or "none" (no response headers policy attached). | `string` | `"managed"` | no |
 
 ### Outputs
 
-| Name                                                                                                                                                              | Description                                                                          |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| <a name="output_cloudfront_distribution_alias_domain_name"></a> [cloudfront_distribution_alias_domain_name](#output_cloudfront_distribution_alias_domain_name)    | The custom domain name generated by bendoerr-terraform-modules/terraform-null-label. |
-| <a name="output_cloudfront_distribution_arn"></a> [cloudfront_distribution_arn](#output_cloudfront_distribution_arn)                                              | The ARN of the CloudFront distribution.                                              |
-| <a name="output_cloudfront_distribution_domain_name"></a> [cloudfront_distribution_domain_name](#output_cloudfront_distribution_domain_name)                      | The domain name of the CloudFront distribution.                                      |
-| <a name="output_cloudfront_distribution_extra_domain_names"></a> [cloudfront_distribution_extra_domain_names](#output_cloudfront_distribution_extra_domain_names) | Any extra domain names provided.                                                     |
-| <a name="output_cloudfront_distribution_id"></a> [cloudfront_distribution_id](#output_cloudfront_distribution_id)                                                 | The ID of the CloudFront distribution.                                               |
-| <a name="output_s3_bucket_arn"></a> [s3_bucket_arn](#output_s3_bucket_arn)                                                                                        | The ARN of the S3 bucket used for the site.                                          |
-| <a name="output_s3_bucket_id"></a> [s3_bucket_id](#output_s3_bucket_id)                                                                                           | The ID of the S3 bucket used for the site.                                           |
+| Name | Description |
+| ---- | ----------- |
+| <a name="output_cloudfront_distribution_alias_domain_name"></a> [cloudfront_distribution_alias_domain_name](#output_cloudfront_distribution_alias_domain_name) | The custom domain name generated by bendoerr-terraform-modules/terraform-null-label. |
+| <a name="output_cloudfront_distribution_arn"></a> [cloudfront_distribution_arn](#output_cloudfront_distribution_arn) | The ARN of the CloudFront distribution. |
+| <a name="output_cloudfront_distribution_domain_name"></a> [cloudfront_distribution_domain_name](#output_cloudfront_distribution_domain_name) | The domain name of the CloudFront distribution. |
+| <a name="output_cloudfront_distribution_extra_domain_names"></a> [cloudfront_distribution_extra_domain_names](#output_cloudfront_distribution_extra_domain_names) | Any extra domain names provided. |
+| <a name="output_cloudfront_distribution_id"></a> [cloudfront_distribution_id](#output_cloudfront_distribution_id) | The ID of the CloudFront distribution. |
+| <a name="output_s3_bucket_arn"></a> [s3_bucket_arn](#output_s3_bucket_arn) | The ARN of the S3 bucket used for the site. |
+| <a name="output_s3_bucket_id"></a> [s3_bucket_id](#output_s3_bucket_id) | The ID of the S3 bucket used for the site. |
 
 <!-- END_TF_DOCS -->
 
@@ -198,10 +198,10 @@ appreciated**.
 ### Creating A Pull Request
 
 1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+1. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+1. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+1. Push to the Branch (`git push origin feature/AmazingFeature`)
+1. Open a Pull Request
 
 ## License
 
