@@ -33,7 +33,7 @@ func TestDefaults(t *testing.T) {
 		Upgrade:      true,
 		NoColor:      os.Getenv("CI") == "true",
 		Vars: map[string]interface{}{
-			"namespace": strings.ToLower(random.UniqueId()),
+			"namespace": strings.ToLower(random.UniqueID()),
 		},
 	}
 
@@ -60,8 +60,8 @@ func TestDefaults(t *testing.T) {
 	s3Client := s3.NewFromConfig(cfg)
 	bucketID := terraform.Output(t, terraformOptions, "s3_bucket_id")
 
-	indexTxt := random.UniqueId()
-	testTxt := random.UniqueId()
+	indexTxt := random.UniqueID()
+	testTxt := random.UniqueID()
 
 	_, err = s3Client.PutObject(
 		context.Background(),
@@ -118,31 +118,7 @@ func TestDefaults(t *testing.T) {
 	// Ensure that the distribution is ready
 	cloudfrontClient := cloudfront.NewFromConfig(cfg)
 	cloudfrontID := terraform.Output(t, terraformOptions, "cloudfront_distribution_id")
-
-	ready := false
-
-	// Wait 10 Minutes max
-	for wait := 0; wait < 60; wait++ {
-		output, lerr := cloudfrontClient.GetDistribution(context.Background(), &cloudfront.GetDistributionInput{
-			Id: aws.String(cloudfrontID),
-		})
-		if lerr != nil {
-			t.Fatal(lerr)
-		}
-
-		t.Log("Current distribution status: " + *output.Distribution.Status)
-
-		if *output.Distribution.Status == "Deployed" {
-			ready = true
-			break
-		}
-
-		time.Sleep(10 * time.Second)
-	}
-
-	if !ready {
-		t.Fatal("timeout: Distribution is not ready")
-	}
+	waitForDistributionDeployed(t, cloudfrontClient, cloudfrontID)
 
 	// Make test HTTPS requests
 	defaultDomainName := terraform.Output(t, terraformOptions, "cloudfront_distribution_domain_name")
@@ -166,6 +142,30 @@ func TestDefaults(t *testing.T) {
 			t.Log("success GET test.txt")
 		}
 	}
+}
+
+// waitForDistributionDeployed polls the CloudFront distribution until its status
+// is "Deployed", up to ~10 minutes, failing the test if it never deploys.
+func waitForDistributionDeployed(t *testing.T, client *cloudfront.Client, id string) {
+	t.Helper()
+	for range 60 {
+		output, err := client.GetDistribution(context.Background(), &cloudfront.GetDistributionInput{
+			Id: aws.String(id),
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		t.Log("Current distribution status: " + *output.Distribution.Status)
+
+		if *output.Distribution.Status == "Deployed" {
+			return
+		}
+
+		time.Sleep(10 * time.Second)
+	}
+
+	t.Fatal("timeout: Distribution is not ready")
 }
 
 // httpGetBodyWithRetry GETs url and returns the response body, retrying on error
