@@ -151,16 +151,7 @@ func TestDefaults(t *testing.T) {
 
 	for _, domainName := range names {
 		// Test the / default
-		resp, err := http.Get(fmt.Sprintf("https://%s/", domainName))
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		indexResp, err := io.ReadAll(resp.Body)
-		if err != nil {
-			t.Fatal(err)
-		}
-
+		indexResp := httpGetBodyWithRetry(t, fmt.Sprintf("https://%s/", domainName))
 		if indexTxt != string(indexResp) {
 			t.Fatal(makediff(indexTxt, string(indexResp)))
 		} else {
@@ -168,22 +159,40 @@ func TestDefaults(t *testing.T) {
 		}
 
 		// Test the /text.txt
-		resp, err = http.Get(fmt.Sprintf("https://%s/test.txt", domainName))
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		textResp, err := io.ReadAll(resp.Body)
-		if err != nil {
-			t.Fatal(err)
-		}
-
+		textResp := httpGetBodyWithRetry(t, fmt.Sprintf("https://%s/test.txt", domainName))
 		if testTxt != string(textResp) {
 			t.Fatal(makediff(testTxt, string(textResp)))
 		} else {
 			t.Log("success GET test.txt")
 		}
 	}
+}
+
+// httpGetBodyWithRetry GETs url and returns the response body, retrying on error
+// for up to ~5 minutes. The alias domain is a freshly-created Route53 record, so
+// its DNS may not have propagated when the test runs and http.Get can transiently
+// fail with "no such host"; poll instead of failing on the first miss (same
+// manual-poll style used above to wait for the distribution to deploy).
+func httpGetBodyWithRetry(t *testing.T, url string) []byte {
+	t.Helper()
+	for wait := 0; wait < 30; wait++ {
+		resp, err := http.Get(url)
+		if err != nil {
+			t.Logf("GET %s not ready yet (%v); retrying", url, err)
+			time.Sleep(10 * time.Second)
+			continue
+		}
+
+		body, rerr := io.ReadAll(resp.Body)
+		resp.Body.Close()
+		if rerr != nil {
+			t.Fatal(rerr)
+		}
+		return body
+	}
+
+	t.Fatalf("timeout: GET %s never succeeded", url)
+	return nil
 }
 
 func makediff(want interface{}, got interface{}) string {
