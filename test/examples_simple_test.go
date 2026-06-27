@@ -170,13 +170,15 @@ func TestDefaults(t *testing.T) {
 
 // httpGetBodyWithRetry GETs url and returns the response body, retrying on error
 // for up to ~5 minutes. The alias domain is a freshly-created Route53 record, so
-// its DNS may not have propagated when the test runs and http.Get can transiently
-// fail with "no such host"; poll instead of failing on the first miss (same
-// manual-poll style used above to wait for the distribution to deploy).
+// its DNS may not have propagated when the test runs and the request can
+// transiently fail to resolve; poll instead of failing on the first miss (same
+// manual-poll style used above to wait for the distribution to deploy). Each
+// attempt is bounded by a client timeout so a stalled connect can't hang the loop.
 func httpGetBodyWithRetry(t *testing.T, url string) []byte {
 	t.Helper()
-	for wait := 0; wait < 30; wait++ {
-		resp, err := http.Get(url)
+	client := &http.Client{Timeout: 10 * time.Second}
+	for range 30 {
+		resp, err := client.Get(url)
 		if err != nil {
 			t.Logf("GET %s not ready yet (%v); retrying", url, err)
 			time.Sleep(10 * time.Second)
