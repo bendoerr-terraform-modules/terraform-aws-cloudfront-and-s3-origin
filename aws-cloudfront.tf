@@ -17,6 +17,22 @@ resource "aws_cloudfront_distribution" "site" {
     origin_access_control_id = aws_cloudfront_origin_access_control.site.id
   }
 
+  dynamic "origin" {
+    for_each = { for o in var.additional_origins : o.origin_id => o }
+    content {
+      origin_id   = origin.value.origin_id
+      domain_name = origin.value.domain_name
+      origin_path = origin.value.origin_path
+
+      custom_origin_config {
+        http_port              = 80
+        https_port             = 443
+        origin_protocol_policy = "https-only"
+        origin_ssl_protocols   = ["TLSv1.2"]
+      }
+    }
+  }
+
   default_cache_behavior {
     target_origin_id           = module.label_site.id
     compress                   = true
@@ -32,6 +48,24 @@ resource "aws_cloudfront_distribution" "site" {
         event_type   = function_association.value.event_type
         function_arn = function_association.value.function_arn
       }
+    }
+  }
+
+  dynamic "ordered_cache_behavior" {
+    for_each = var.ordered_cache_behaviors
+    content {
+      path_pattern             = ordered_cache_behavior.value.path_pattern
+      target_origin_id         = ordered_cache_behavior.value.target_origin_id
+      allowed_methods          = ordered_cache_behavior.value.allowed_methods
+      cached_methods           = ordered_cache_behavior.value.cached_methods
+      cache_policy_id          = ordered_cache_behavior.value.cache_policy_id
+      origin_request_policy_id = ordered_cache_behavior.value.origin_request_policy_id
+      # Same viewer-side response headers policy as the default behavior so the
+      # security headers strategy (var.security_headers) applies to API
+      # responses too.
+      response_headers_policy_id = local.response_headers_policy_id
+      viewer_protocol_policy     = "redirect-to-https"
+      compress                   = true
     }
   }
 

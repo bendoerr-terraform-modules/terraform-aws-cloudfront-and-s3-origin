@@ -6,7 +6,7 @@ module "label_site" {
 }
 
 locals {
-  default_alias = format("%s.%s", module.label_site.dns_name, var.domain_zone_name)
+  default_alias = var.use_apex_domain ? var.domain_zone_name : format("%s.%s", module.label_site.dns_name, var.domain_zone_name)
   extra_aliases = formatlist("%s.%s", var.extra_domain_prefixes, var.domain_zone_name)
 
   # AWS-published static ID for the managed `SecurityHeadersPolicy`. Hardcoded rather than
