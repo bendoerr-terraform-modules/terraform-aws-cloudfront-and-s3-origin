@@ -171,3 +171,48 @@ variable "response_headers_policy_id" {
     error_message = "var.response_headers_policy_id must be null or a CloudFront response headers policy ID in UUID format (e.g. \"67f7725c-6f97-4210-82d7-5512b31e9d03\"). If you have the policy ARN, the ID is the last path segment."
   }
 }
+
+variable "use_apex_domain" {
+  type        = bool
+  default     = false
+  nullable    = false
+  description = "Serve the zone apex (var.domain_zone_name itself) as the distribution's primary alias instead of the label-derived subdomain."
+}
+
+variable "additional_origins" {
+  type = list(object({
+    origin_id   = string
+    domain_name = string
+    origin_path = optional(string, "")
+  }))
+  default     = []
+  nullable    = false
+  description = "Extra custom (HTTPS-only, TLSv1.2) origins, e.g. an API Gateway regional endpoint. origin_path may carry the API stage (e.g. \"/api\")."
+
+  validation {
+    condition     = length(var.additional_origins) == length(distinct([for o in var.additional_origins : o.origin_id]))
+    error_message = "additional_origins origin_id values must be unique."
+  }
+}
+
+variable "ordered_cache_behaviors" {
+  type = list(object({
+    path_pattern             = string
+    target_origin_id         = string
+    allowed_methods          = optional(list(string), ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"])
+    cached_methods           = optional(list(string), ["GET", "HEAD"])
+    cache_policy_id          = optional(string, "4135ea2d-6df8-44a3-9df3-4b5a84be39ad")
+    origin_request_policy_id = optional(string, "b689b0a8-53d0-40ab-baf2-68738e2966ac")
+  }))
+  default     = []
+  nullable    = false
+  description = "Path-routed behaviors ahead of the default S3 behavior, evaluated in list order. Defaults suit an API origin: Managed-CachingDisabled + Managed-AllViewerExceptHostHeader."
+
+  validation {
+    condition = alltrue([
+      for b in var.ordered_cache_behaviors :
+      contains([for o in var.additional_origins : o.origin_id], b.target_origin_id)
+    ])
+    error_message = "Every ordered_cache_behaviors target_origin_id must match an additional_origins origin_id."
+  }
+}

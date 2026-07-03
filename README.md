@@ -110,7 +110,7 @@ will find a compatible version automatically.
 
 | Name | Version |
 | ---- | ------- |
-| <a name="requirement_terraform"></a> [terraform](#requirement_terraform) | >= 0.13 |
+| <a name="requirement_terraform"></a> [terraform](#requirement_terraform) | >= 1.9.0 |
 | <a name="requirement_aws"></a> [aws](#requirement_aws) | ~> 6.0 |
 
 ### Providers
@@ -146,6 +146,7 @@ will find a compatible version automatically.
 
 | Name | Description | Type | Default | Required |
 | ---- | ----------- | ---- | ------- | :------: |
+| <a name="input_additional_origins"></a> [additional_origins](#input_additional_origins) | Extra custom (HTTPS-only, TLSv1.2) origins, e.g. an API Gateway regional endpoint. origin_path may carry the API stage (e.g. "/api"). | <pre>list(object({<br/>    origin_id   = string<br/>    domain_name = string<br/>    origin_path = optional(string, "")<br/>  }))</pre> | `[]` | no |
 | <a name="input_context"></a> [context](#input_context) | Shared Context from Ben's terraform-null-context | <pre>object({<br/>    attributes     = list(string)<br/>    dns_namespace  = string<br/>    environment    = string<br/>    instance       = string<br/>    instance_short = string<br/>    namespace      = string<br/>    region         = string<br/>    region_short   = string<br/>    role           = string<br/>    role_short     = string<br/>    project        = string<br/>    tags           = map(string)<br/>  })</pre> | n/a | yes |
 | <a name="input_default_root_object"></a> [default_root_object](#input_default_root_object) | The default root object for the S3 bucket, typically used for web hosting. | `string` | `"index.html"` | no |
 | <a name="input_domain_zone_id"></a> [domain_zone_id](#input_domain_zone_id) | If setting a custom CNAME for the Cloudfront distribution this is the Route 53 hosted zone ID. | `string` | n/a | yes |
@@ -154,9 +155,11 @@ will find a compatible version automatically.
 | <a name="input_extra_domain_prefixes"></a> [extra_domain_prefixes](#input_extra_domain_prefixes) | Prefixes for additional custom domains to be associated with the CloudFront distribution. Each prefix is concatenated as '<prefix>.\<domain_zone_name>' to form the final FQDN; multi-label prefixes (e.g. "api.cdn") are supported. | `list(string)` | `[]` | no |
 | <a name="input_function_associations"></a> [function_associations](#input_function_associations) | A config block that triggers a lambda function with specific actions (maximum 4). | <pre>set(object({<br/>    event_type   = string<br/>    function_arn = string<br/>  }))</pre> | `[]` | no |
 | <a name="input_name"></a> [name](#input_name) | The name of the site, used for naming resources and identifiers. | `string` | `"site"` | no |
+| <a name="input_ordered_cache_behaviors"></a> [ordered_cache_behaviors](#input_ordered_cache_behaviors) | Path-routed behaviors ahead of the default S3 behavior, evaluated in list order. Defaults suit an API origin: Managed-CachingDisabled + Managed-AllViewerExceptHostHeader. | <pre>list(object({<br/>    path_pattern             = string<br/>    target_origin_id         = string<br/>    allowed_methods          = optional(list(string), \["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"\])<br/>    cached_methods           = optional(list(string), \["GET", "HEAD"\])<br/>    cache_policy_id          = optional(string, "4135ea2d-6df8-44a3-9df3-4b5a84be39ad")<br/>    origin_request_policy_id = optional(string, "b689b0a8-53d0-40ab-baf2-68738e2966ac")<br/>  }))</pre> | `[]` | no |
 | <a name="input_response_headers_policy_id"></a> [response_headers_policy_id](#input_response_headers_policy_id) | CloudFront response headers policy ID. Required when var.security_headers = "custom"; ignored otherwise. | `string` | `null` | no |
 | <a name="input_s3_kms_key_arn"></a> [s3_kms_key_arn](#input_s3_kms_key_arn) | The ARN of the KMS key used for S3 server-side encryption. | `string` | `null` | no |
 | <a name="input_security_headers"></a> [security_headers](#input_security_headers) | Response headers policy strategy for the CloudFront distribution. One of: "managed" (attach AWS's Managed-SecurityHeadersPolicy — HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, X-XSS-Protection), "custom" (attach the policy at var.response_headers_policy_id — required when this is set), or "none" (no response headers policy attached). | `string` | `"managed"` | no |
+| <a name="input_use_apex_domain"></a> [use_apex_domain](#input_use_apex_domain) | Serve the zone apex (var.domain_zone_name itself) as the distribution's primary alias instead of the label-derived subdomain. | `bool` | `false` | no |
 
 ### Outputs
 
