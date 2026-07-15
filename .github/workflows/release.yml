@@ -16,4 +16,4 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-    uses: bendoerr-terraform-modules/workflows/.github/workflows/release.yml@v1.1.1
+    uses: bendoerr-terraform-modules/workflows/.github/workflows/release.yml@c2b51a26bb2c70baa655258fd44741345e4c9e95 # v1.1.1
