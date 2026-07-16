@@ -23,6 +23,8 @@ import (
 )
 
 func TestDefaults(t *testing.T) {
+	ctx := context.Background()
+
 	// Setup terratest
 	rootFolder := "../"
 	terraformFolderRelativeToRoot := "examples/simple"
@@ -39,15 +41,15 @@ func TestDefaults(t *testing.T) {
 	}
 
 	// At the end of the test, run `terraform destroy` to clean up any resources that were created
-	defer terraform.Destroy(t, terraformOptions)
+	defer terraform.DestroyContext(t, ctx, terraformOptions)
 
 	// Run `terraform init` and `terraform apply`, then a plan that must show no
 	// changes: the module once shipped a standing viewer_certificate diff (#150),
 	// and idempotency is the guard for that whole class of bug.
-	terraform.InitAndApplyAndIdempotent(t, terraformOptions)
+	terraform.InitAndApplyAndIdempotentContext(t, ctx, terraformOptions)
 
 	// Print out the Terraform Output values
-	_, _ = pretty.Print(terraform.OutputAll(t, terraformOptions))
+	_, _ = pretty.Print(terraform.OutputAllContext(t, ctx, terraformOptions))
 
 	// AWS Session
 	cfg, err := config.LoadDefaultConfig(
@@ -61,7 +63,7 @@ func TestDefaults(t *testing.T) {
 
 	// Upload two test files to the S3 bucket
 	s3Client := s3.NewFromConfig(cfg)
-	bucketID := terraform.Output(t, terraformOptions, "s3_bucket_id")
+	bucketID := terraform.OutputContext(t, ctx, terraformOptions, "s3_bucket_id")
 
 	indexTxt := random.UniqueID()
 	testTxt := random.UniqueID()
@@ -120,13 +122,13 @@ func TestDefaults(t *testing.T) {
 
 	// Ensure that the distribution is ready
 	cloudfrontClient := cloudfront.NewFromConfig(cfg)
-	cloudfrontID := terraform.Output(t, terraformOptions, "cloudfront_distribution_id")
+	cloudfrontID := terraform.OutputContext(t, ctx, terraformOptions, "cloudfront_distribution_id")
 	waitForDistributionDeployed(t, cloudfrontClient, cloudfrontID)
 	assertViewerCertificate(t, cloudfrontClient, cloudfrontID)
 
 	// Make test HTTPS requests
-	defaultDomainName := terraform.Output(t, terraformOptions, "cloudfront_distribution_domain_name")
-	aliasDomainName := terraform.Output(t, terraformOptions, "cloudfront_distribution_alias_domain_name")
+	defaultDomainName := terraform.OutputContext(t, ctx, terraformOptions, "cloudfront_distribution_domain_name")
+	aliasDomainName := terraform.OutputContext(t, ctx, terraformOptions, "cloudfront_distribution_alias_domain_name")
 	names := []string{defaultDomainName, aliasDomainName}
 
 	for _, domainName := range names {
