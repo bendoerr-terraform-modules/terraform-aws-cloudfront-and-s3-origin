@@ -16,6 +16,6 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    uses: bendoerr-terraform-modules/workflows/.github/workflows/infracost.yml@v1.1.1
+    uses: bendoerr-terraform-modules/workflows/.github/workflows/infracost.yml@c2b51a26bb2c70baa655258fd44741345e4c9e95 # v1.1.1
     secrets:
       INFRACOST_API_KEY: ${{ secrets.INFRACOST_API_KEY }}
