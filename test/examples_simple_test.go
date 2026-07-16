@@ -12,6 +12,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/cloudfront"
+	"github.com/aws/aws-sdk-go-v2/service/cloudfront/types"
 	"github.com/gruntwork-io/terratest/modules/random"
 
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -40,8 +41,10 @@ func TestDefaults(t *testing.T) {
 	// At the end of the test, run `terraform destroy` to clean up any resources that were created
 	defer terraform.Destroy(t, terraformOptions)
 
-	// This will run `terraform init` and `terraform apply` and fail the test if there are any errors
-	terraform.InitAndApply(t, terraformOptions)
+	// Run `terraform init` and `terraform apply`, then a plan that must show no
+	// changes: the module once shipped a standing viewer_certificate diff (#150),
+	// and idempotency is the guard for that whole class of bug.
+	terraform.InitAndApplyAndIdempotent(t, terraformOptions)
 
 	// Print out the Terraform Output values
 	_, _ = pretty.Print(terraform.OutputAll(t, terraformOptions))
@@ -119,6 +122,7 @@ func TestDefaults(t *testing.T) {
 	cloudfrontClient := cloudfront.NewFromConfig(cfg)
 	cloudfrontID := terraform.Output(t, terraformOptions, "cloudfront_distribution_id")
 	waitForDistributionDeployed(t, cloudfrontClient, cloudfrontID)
+	assertViewerCertificate(t, cloudfrontClient, cloudfrontID)
 
 	// Make test HTTPS requests
 	defaultDomainName := terraform.Output(t, terraformOptions, "cloudfront_distribution_domain_name")
@@ -166,6 +170,36 @@ func waitForDistributionDeployed(t *testing.T, client *cloudfront.Client, id str
 	}
 
 	t.Fatal("timeout: Distribution is not ready")
+}
+
+// assertViewerCertificate checks the live distribution's certificate config: the
+// ACM cert must be the only certificate attached. CloudFront normalizes
+// CloudFrontDefaultCertificate to false whenever an ACM arn is present, so a
+// module that sets both ships a permanent phantom plan diff to every consumer
+// (#150) — and applying that diff on an aliased distribution risks the cert.
+func assertViewerCertificate(t *testing.T, client *cloudfront.Client, id string) {
+	t.Helper()
+	output, err := client.GetDistribution(context.Background(), &cloudfront.GetDistributionInput{
+		Id: aws.String(id),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	vc := output.Distribution.DistributionConfig.ViewerCertificate
+	if vc == nil {
+		t.Fatal("distribution has no viewer certificate config")
+	}
+	if aws.ToBool(vc.CloudFrontDefaultCertificate) {
+		t.Fatal("CloudFrontDefaultCertificate is true; expected the ACM certificate to be the only one attached")
+	}
+	if aws.ToString(vc.ACMCertificateArn) == "" {
+		t.Fatal("ACMCertificateArn is empty; expected the ACM certificate to be attached")
+	}
+	if vc.MinimumProtocolVersion != types.MinimumProtocolVersionTLSv122021 {
+		t.Fatalf("MinimumProtocolVersion is %v; expected TLSv1.2_2021", vc.MinimumProtocolVersion)
+	}
+	t.Log("viewer certificate config verified: ACM-only, TLSv1.2_2021 floor")
 }
 
 // httpGetBodyWithRetry GETs url and returns the response body, retrying on error

@@ -86,9 +86,12 @@ resource "aws_cloudfront_distribution" "site" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
-    acm_certificate_arn            = aws_acm_certificate_validation.cert.certificate_arn
-    ssl_support_method             = "sni-only"
+    # cloudfront_default_certificate is mutually exclusive with acm_certificate_arn —
+    # the API normalizes it to false when an ACM cert is attached, so setting both
+    # leaves a permanent phantom plan diff in every consumer (#150). Never both.
+    acm_certificate_arn      = aws_acm_certificate_validation.cert.certificate_arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
   }
 
   lifecycle {
