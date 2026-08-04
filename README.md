@@ -125,7 +125,7 @@ will find a compatible version automatically.
 | Name | Source | Version |
 | ---- | ------ | ------- |
 | <a name="module_label_site"></a> [label_site](#module_label_site) | bendoerr-terraform-modules/label/null | 1.0.1 |
-| <a name="module_s3_site"></a> [s3_site](#module_s3_site) | terraform-aws-modules/s3-bucket/aws | 5.14.1 |
+| <a name="module_s3_site"></a> [s3_site](#module_s3_site) | terraform-aws-modules/s3-bucket/aws | 5.15.1 |
 
 ### Resources
 
