@@ -187,8 +187,8 @@ for a list of proposed features (and known issues).
 
 [<img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/bendoerr-terraform-modules/terraform-aws-cloudfront-and-s3-origin?logo=github">](https://github.com/bendoerr-terraform-modules/terraform-aws-cloudfront-and-s3-origin/pulls)
 
-Contributions are what make the open source community such an amazing place to
-be learn, inspire, and create. Any contributions you make are **greatly
+Contributions are what make the open-source community such an amazing place to
+learn, inspire, and create. Any contributions you make are **greatly
 appreciated**.
 
 - If you have suggestions for adding or removing projects, feel free to
