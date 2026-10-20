@@ -28,8 +28,8 @@ github.com/aws/aws-sdk-go-v2/service/acm v1.38.2 h1:ozcwethaFOi2ST9h6MKGq1GAIHP6
 github.com/aws/aws-sdk-go-v2/service/acm v1.38.2/go.mod h1:HNtDOv4XmqExPxNIBp171KKc5ZoUJwHH9ZhlCcZmdt0=
 github.com/aws/aws-sdk-go-v2/service/autoscaling v1.66.1 h1:kGlbhb5GMfkP/bcqcbt3oDi50kwDTpRmNzYUY9LqbLk=
 github.com/aws/aws-sdk-go-v2/service/autoscaling v1.66.1/go.mod h1:z45kurrOonQepd3SN5LIgropAn1NGHwBn1yOMF+QVFU=
-github.com/aws/aws-sdk-go-v2/service/cloudfront v1.73.1 h1:/U9s1rmIvfAzSP9kg3k9CIB9wYM1l8ukje/+tx1J7yk=
-github.com/aws/aws-sdk-go-v2/service/cloudfront v1.73.1/go.mod h1:LTDZxT77siIgcH1AsJLiEmNkwycK4V0pmbwk8UUqdDc=
+github.com/aws/aws-sdk-go-v2/service/cloudfront v1.74.0 h1:HVcyCuahJnV/619yGXKJlm3MC1irlOC14q3Y3WB89Z0=
+github.com/aws/aws-sdk-go-v2/service/cloudfront v1.74.0/go.mod h1:LTDZxT77siIgcH1AsJLiEmNkwycK4V0pmbwk8UUqdDc=
 github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs v1.75.2 h1:qXso3xK+5GmfBq8n/ymjJB12kHkO3Yhy9+8cIHlw6J4=
 github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs v1.75.2/go.mod h1:N336OxQ6TvRbb6V1esVE8PtQFU86YvYaS+lVjsJTmP0=
 github.com/aws/aws-sdk-go-v2/service/dynamodb v1.57.2 h1:J2ibOhlMLx1o6QwDFsHHfbQjaZ6t5LXodiLNuK6jbZA=
@@ -62,8 +62,8 @@ github.com/aws/aws-sdk-go-v2/service/rds v1.118.1 h1:cywOPYUFOSOAjrovJNxuBXd6SV3
 github.com/aws/aws-sdk-go-v2/service/rds v1.118.1/go.mod h1:BaS59j6evm68pt9EaJnb7tnTOaT0MY4rJeESKh8RKKY=
 github.com/aws/aws-sdk-go-v2/service/route53 v1.62.6 h1:6b+KS0uVMMsCUKlW8OPNxmcEmoEUtqP1LfnzSzWmuQM=
 github.com/aws/aws-sdk-go-v2/service/route53 v1.62.6/go.mod h1:+wmraHmxwqi7feUL/41uULJWl8V1HxtxzOJH6a4ZRg4=
-github.com/aws/aws-sdk-go-v2/service/s3 v1.113.4 h1:n6kO3OlBvnDEksQpvBLbAldjHwGlu8kErvhHJkhlaRY=
-github.com/aws/aws-sdk-go-v2/service/s3 v1.113.4/go.mod h1:9APRWGLFITKD+xzWSIyT9V7QV4bNlEuIieWlzXgGFlI=
+github.com/aws/aws-sdk-go-v2/service/s3 v1.114.0 h1:VMAdYqr4Jn/8ATs9BHC5riwrs0d6m1Z2ohFriSwZwm0=
+github.com/aws/aws-sdk-go-v2/service/s3 v1.114.0/go.mod h1:9APRWGLFITKD+xzWSIyT9V7QV4bNlEuIieWlzXgGFlI=
 github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.41.6 h1:XR42AXidhYs4HwH0I+yElLXVt7zb2hAyNHQJe6Blv7w=
 github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.41.6/go.mod h1:nOTsSVQlAsgwVRdtZYtECSnsInF8IUhrpnclCPat7Fs=
 github.com/aws/aws-sdk-go-v2/service/signin v1.10.1 h1:DzCCWLzcIRQ77F3DEUljud7bEjTgFOIKXP52NmVRyhU=
